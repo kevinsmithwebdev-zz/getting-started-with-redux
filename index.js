@@ -1,5 +1,7 @@
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var todo = function todo(state, action) {
@@ -14,10 +16,6 @@ var todo = function todo(state, action) {
       if (state.id !== action.id) return state;else return Object.assign({}, state, {
         completed: !state.completed
       });
-    // {
-    //   ...todo,
-    //   completed: !todo.completed
-    // }
     default:
       return state;
   } // switch
@@ -68,45 +66,185 @@ var store = createStore(todoApp);
 
 //*************
 
-console.log('Intitial state:');
-console.log(store.getState());
-console.log('--------------');
+var _React = React,
+    Component = _React.Component;
 
-console.log('Dispatching ADD_TODO');
-store.dispatch({
-  type: 'ADD_TODO',
-  id: 0,
-  text: 'Learn Redux'
-});
-console.log('Current state:');
-console.log(store.getState());
-console.log('--------------');
 
-console.log('Dispatching ADD_TODO');
-store.dispatch({
-  type: 'ADD_TODO',
-  id: 1,
-  text: 'Go Shopping'
-});
-console.log('Current state:');
-console.log(store.getState());
-console.log('--------------');
+var FilterLink = function FilterLink(_ref) {
+  var filter = _ref.filter,
+      currentFilter = _ref.currentFilter,
+      children = _ref.children,
+      _onClick = _ref.onClick;
 
-console.log('Dispatching TOGGLE_TODO');
-store.dispatch({
-  type: 'TOGGLE_TODO',
-  id: 0
-});
-console.log('Current state:');
-console.log(store.getState());
-console.log('--------------');
+  if (filter === currentFilter) {
+    return React.createElement(
+      'span',
+      null,
+      children
+    );
+  }
 
-console.log('Dispatching SET_VISIBILITY_FILTER');
-store.dispatch({
-  type: 'SET_VISIBILITY_FILTER',
-  filter: 'SHOW_COMPLETED'
-});
-console.log('Current state:');
-console.log(store.getState());
-console.log('--------------');
+  return React.createElement(
+    'a',
+    { href: '#',
+      onClick: function onClick(e) {
+        e.preventDefault();
+        _onClick(filter);
+      }
+    },
+    children
+  );
+};
+
+var Footer = function Footer(_ref2) {
+  var visibilityFilter = _ref2.visibilityFilter,
+      onFilterClick = _ref2.onFilterClick;
+  return React.createElement(
+    'p',
+    null,
+    'Show:',
+    ' ',
+    React.createElement(
+      FilterLink,
+      {
+        filter: 'SHOW_ALL',
+        currentFilter: visibilityFilter,
+        onClick: onFilterClick
+      },
+      'All'
+    ),
+    ' ',
+    React.createElement(
+      FilterLink,
+      {
+        filter: 'SHOW_ACTIVE',
+        currentFilter: visibilityFilter,
+        onClick: onFilterClick
+      },
+      'Active'
+    ),
+    ' ',
+    React.createElement(
+      FilterLink,
+      {
+        filter: 'SHOW_COMPLETED',
+        currentFilter: visibilityFilter,
+        onClick: onFilterClick
+      },
+      'Completed'
+    )
+  );
+};
+
+var Todo = function Todo(_ref3) {
+  var onClick = _ref3.onClick,
+      completed = _ref3.completed,
+      text = _ref3.text;
+  return React.createElement(
+    'li',
+    {
+      onClick: onClick,
+      style: {
+        textDecoration: completed ? 'line-through' : 'none'
+      } },
+    text
+  );
+};
+
+var TodoList = function TodoList(_ref4) {
+  var todos = _ref4.todos,
+      onTodoClick = _ref4.onTodoClick;
+  return React.createElement(
+    'ul',
+    null,
+    todos.map(function (todo) {
+      return React.createElement(Todo, _extends({
+        key: todo.id
+      }, todo, {
+        onClick: function onClick() {
+          return onTodoClick(todo.id);
+        }
+      }));
+    })
+  );
+};
+
+var AddTodo = function AddTodo(_ref5) {
+  var onAddClick = _ref5.onAddClick;
+
+  var input = void 0;
+
+  return React.createElement(
+    'div',
+    null,
+    React.createElement('input', { ref: function ref(node) {
+        input = node;
+      } }),
+    React.createElement(
+      'button',
+      { onClick: function onClick() {
+          onAddClick(input.value);
+          input.value = '';
+        } },
+      'Add Todo'
+    )
+  );
+};
+
+var getVisibleTodos = function getVisibleTodos(todos, filter) {
+  switch (filter) {
+    case 'SHOW_ALL':
+      return todos;
+    case 'SHOW_COMPLETED':
+      return todos.filter(function (t) {
+        return t.completed;
+      });
+    case 'SHOW_ACTIVE':
+      return todos.filter(function (t) {
+        return !t.completed;
+      });
+  }
+};
+
+var nextTodoId = 0;
+
+var TodoApp = function TodoApp(todos, visibilityFilter) {
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(AddTodo, {
+      onAddClick: function onAddClick(text) {
+        return store.dispatch({
+          type: 'ADD_TODO',
+          id: nextTodoId++,
+          text: text
+        });
+      }
+    }),
+    React.createElement(TodoList, {
+      todos: getVisibleTodos(todos, visibilityFilter),
+      onTodoClick: function onTodoClick(id) {
+        return store.dispatch({
+          type: 'TOGGLE_TODO',
+          id: id
+        });
+      } }),
+    React.createElement(Footer, {
+      visibilityFilter: visibilityFilter,
+      onFilterClick: function onFilterClick(filter) {
+        return store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter: filter
+        });
+      }
+    })
+  );
+};
+
+var render = function render() {
+  ReactDOM.render(React.createElement(TodoApp, store.getState()), document.getElementById('root'));
+};
+
+store.subscribe(render);
+render();
 //# sourceMappingURL=C:\Users\Rox and Kevin\Documents\Programming\ZZZ Learning\darr\index.js.map
