@@ -257,9 +257,21 @@ const TodoApp = () => (
   </div>
 )
 
-const { Provider } = ReactRedux
-// import { Provider } from 'react-redux'
-// var Provider = require('react-redux').Provider
+class Provider extends Component {
+  getChildContext() {
+    return {
+      store: this.props.store
+    }
+  }
+  render() {
+    return this.props.children
+  }
+}
+
+Provider.childContextTypes = {
+  store: PropTypes.object
+}
+
 const { createStore } = Redux
 
 ReactDOM.render(

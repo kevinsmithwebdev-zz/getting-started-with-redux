@@ -67,6 +67,11 @@ var todoApp = combineReducers({
   visibilityFilter: visibilityFilter
 });
 
+var _Redux2 = Redux,
+    createStore = _Redux2.createStore;
+
+var store = createStore(todoApp);
+
 //*************
 
 var _React = React,
@@ -112,8 +117,6 @@ var FilterLink = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var store = this.context.store;
-
       this.unsubscribe = store.subscribe(function () {
         return _this2.forceUpdate();
       });
@@ -127,8 +130,6 @@ var FilterLink = function (_Component) {
     key: 'render',
     value: function render() {
       var props = this.props;
-      var store = this.context.store;
-
       var state = store.getState();
 
       return React.createElement(
@@ -149,10 +150,6 @@ var FilterLink = function (_Component) {
 
   return FilterLink;
 }(Component);
-
-FilterLink.contextTypes = {
-  store: PropTypes.object
-};
 
 var Footer = function Footer() {
   return React.createElement(
@@ -213,9 +210,7 @@ var TodoList = function TodoList(_ref3) {
 
 var nextTodoId = 0;
 
-var AddTodo = function AddTodo(props, _ref4) {
-  var store = _ref4.store;
-
+var AddTodo = function AddTodo() {
   var input = void 0;
 
   return React.createElement(
@@ -237,9 +232,6 @@ var AddTodo = function AddTodo(props, _ref4) {
       'Add Todo'
     )
   );
-};
-AddTodo.contextTypes = {
-  store: PropTypes.object
 };
 
 var getVisibleTodos = function getVisibleTodos(todos, filter) {
@@ -271,8 +263,6 @@ var VisibleTodoList = function (_Component2) {
     value: function componentDidMount() {
       var _this4 = this;
 
-      var store = this.context.store;
-
       this.unsubscribe = store.subscribe(function () {
         return _this4.forceUpdate();
       });
@@ -286,8 +276,6 @@ var VisibleTodoList = function (_Component2) {
     key: 'render',
     value: function render() {
       var props = this.props;
-      var store = this.context.store;
-
       var state = store.getState();
 
       return React.createElement(TodoList, {
@@ -305,10 +293,6 @@ var VisibleTodoList = function (_Component2) {
   return VisibleTodoList;
 }(Component);
 
-VisibleTodoList.contextTypes = {
-  store: PropTypes.object
-};
-
 var TodoApp = function TodoApp() {
   return React.createElement(
     'div',
@@ -319,18 +303,5 @@ var TodoApp = function TodoApp() {
   );
 };
 
-var _ReactRedux = ReactRedux,
-    Provider = _ReactRedux.Provider;
-// import { Provider } from 'react-redux'
-// var Provider = require('react-redux').Provider
-
-var _Redux2 = Redux,
-    createStore = _Redux2.createStore;
-
-
-ReactDOM.render(React.createElement(
-  Provider,
-  { store: createStore(todoApp) },
-  React.createElement(TodoApp, null)
-), document.getElementById('root'));
-//# sourceMappingURL=C:\Users\Rox and Kevin\Documents\Programming\ZZZ Learning\darr\index.js.map
+ReactDOM.render(React.createElement(TodoApp, null), document.getElementById('root'));
+//# sourceMappingURL=C:\Users\Rox and Kevin\Documents\Programming\ZZZ Learning\darr\23 Extracting Container Components (VisibleTodoList, AddTodo)\index.js.map
