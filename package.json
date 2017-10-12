@@ -1,0 +1,19 @@
+{
+  "name": "darr",
+  "version": "1.0.0",
+  "description": "These are my files from coding out Dan Abramov's [\"Getting Started with Redux\"](https://egghead.io/courses/getting-started-with-redux) at egghead.io. I also found [this repo](https://github.com/tayiorbeii/egghead.io_redux_course_notes) to be helpful.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksjazzguitar/getting-started-with-redux.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ksjazzguitar/getting-started-with-redux/issues"
+  },
+  "homepage": "https://github.com/ksjazzguitar/getting-started-with-redux#readme"
+}

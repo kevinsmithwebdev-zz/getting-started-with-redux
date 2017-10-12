@@ -59,12 +59,13 @@ const store = createStore(todoApp)
 
 const { Component } = React
 
-const Link = ({
-  active,
+const FilterLink = ({
+  filter,
+  currentFilter,
   children,
   onClick
 }) => {
-  if (active) {
+  if (filter === currentFilter) {
     return <span>{children}</span>
   }
 
@@ -72,7 +73,7 @@ const Link = ({
     <a href='#'
       onClick={e => {
         e.preventDefault()
-        onClick()
+        onClick(filter)
       }}
     >
       {children}
@@ -80,54 +81,31 @@ const Link = ({
   )
 }
 
-class FilterLink extends Component {
-  componentDidMount() {
-    this.unsubscribe = store.subscribe(() => 
-      this.forceUpdate()
-    )
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-
-  render() {
-    const props = this.props
-    const state = store.getState()
-    return (
-      <Link
-        active={
-          props.filter === state.visibilityFilter
-        }
-        onClick={() =>
-          store.dispatch({
-            type: 'SET_VISIBILITY_FILTER',
-            filter: props.filter
-          })
-        }
-      >
-        {props.children}
-      </Link>
-    )
-  }
-}
-
-const Footer = () => (
+const Footer = ({
+  visibilityFilter,
+  onFilterClick
+}) => (
   <p>
     <FilterLink
       filter='SHOW_ALL'
+      currentFilter={visibilityFilter}
+      onClick={onFilterClick}
     >
       All
     </FilterLink>
     {', '}
     <FilterLink
       filter='SHOW_ACTIVE'
+      currentFilter={visibilityFilter}
+      onClick={onFilterClick}
     >
       Active
     </FilterLink>
-    {', '}
+      {', '}
     <FilterLink
       filter='SHOW_COMPLETED'
+      currentFilter={visibilityFilter}
+      onClick={onFilterClick}
     >
       Completed
     </FilterLink>
@@ -236,7 +214,15 @@ const TodoApp = ({
           })
         }
       />
-      <Footer />
+      <Footer
+        visibilityFilter={visibilityFilter}
+        onFilterClick={filter =>
+          store.dispatch({
+            type: 'SET_VISIBILITY_FILTER',
+            filter
+          })
+        }
+      />
     </div>
   )
 }
